@@ -9,16 +9,12 @@ from database import (
     remove_face,
 )
 
-# an HTTP-specific exception class  to generate exception information
-
 app = FastAPI()
 
 origins = [
     "http://localhost:3000",
 ]
 
-# what is a middleware? 
-# software that acts as a bridge between an operating system or database and applications, especially on a network.
 
 app.add_middleware(
     CORSMiddleware,
