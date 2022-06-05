@@ -2,10 +2,7 @@ from fastapi import HTTPException, APIRouter, status
 import face_recognition
 import urllib.request
 from model import Face
-from database import (
-    fetch_all_faces,
-    create_face
-)
+from database import collection
 
 router = APIRouter(
     prefix="/faces",
@@ -15,27 +12,34 @@ router = APIRouter(
 
 @router.get("/")
 async def get_face():
-    response = await fetch_all_faces()
-    return response
+    faces = []
+    cursor = collection.find({})
+    async for document in cursor:
+        faces.append(Face(**document))
+    return faces
 
 
 @router.post("/", response_model=Face)
 async def post_face(face: Face):
-    # open image url 
-    urllib.request.urlretrieve(
-        face.photo,
-        "temp.png")
+    try:
+        # open image url
+        urllib.request.urlretrieve(
+            face.photo,
+            "temp.png")
 
-    face_image = face_recognition.load_image_file("temp.png")
+        face_image = face_recognition.load_image_file("temp.png")
 
-    face_locations = face_recognition.face_locations(face_image)
+        face_locations = face_recognition.face_locations(face_image)
 
-    if face_locations:
+        if not face_locations:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="No face found in uploaded image")
+
         face_encoding = face_recognition.face_encodings(face_image)[0]
 
         face_embedding = face_encoding.tolist()
 
-        response = await create_face({
+        document = {
             "first_name": face.first_name,
             "last_name": face.last_name,
             "email_address": face.email_address,
@@ -45,11 +49,10 @@ async def post_face(face: Face):
             "phone_number": face.phone_number,
             "street_address": face.street_address,
             "embedding": face_embedding
-        })
-        if response:
-            return response
+        }
+        response = await collection.insert_one(document)
+        return document
+
+    except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong")
-    else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"No face found in uploaded image")
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error: {e}")
