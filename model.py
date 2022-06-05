@@ -1,9 +1,12 @@
-#  @bekbrace
-#  FARMSTACK Tutorial - Sunday 13.06.2021
-
-# Pydantic allows auto creation of JSON Schemas from models
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 class Face(BaseModel):
-    title: str
-    description: str
+    first_name: str
+    last_name: str
+    email_address: EmailStr
+    photo: str
+    phone_number: str
+    city: Optional[str] = None
+    street_address: Optional[str] = None
+
