@@ -1,21 +1,16 @@
-#  @bekbrace
-#  FARMSTACK Tutorial - Sunday 13.06.2021
-
 from fastapi import FastAPI, HTTPException
-
-from model import Todo
-
+from fastapi.middleware.cors import CORSMiddleware
+from model import Face
 from database import (
-    fetch_one_todo,
-    fetch_all_todos,
-    create_todo,
-    update_todo,
-    remove_todo,
+    fetch_one_face,
+    fetch_all_faces,
+    create_face,
+    update_face,
+    remove_face,
 )
 
 # an HTTP-specific exception class  to generate exception information
 
-from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
@@ -37,35 +32,35 @@ app.add_middleware(
 async def read_root():
     return {"Hello": "World"}
 
-@app.get("/api/todo")
-async def get_todo():
-    response = await fetch_all_todos()
+@app.get("/api/face")
+async def get_face():
+    response = await fetch_all_faces()
     return response
 
-@app.get("/api/todo/{title}", response_model=Todo)
-async def get_todo_by_title(title):
-    response = await fetch_one_todo(title)
+@app.get("/api/face/{title}", response_model=Face)
+async def get_face_by_title(title):
+    response = await fetch_one_face(title)
     if response:
         return response
-    raise HTTPException(404, f"There is no todo with the title {title}")
+    raise HTTPException(404, f"There is no face with the title {title}")
 
-@app.post("/api/todo/", response_model=Todo)
-async def post_todo(todo: Todo):
-    response = await create_todo(todo.dict())
+@app.post("/api/face/", response_model=Face)
+async def post_face(face: Face):
+    response = await create_face(face.dict())
     if response:
         return response
     raise HTTPException(400, "Something went wrong")
 
-@app.put("/api/todo/{title}/", response_model=Todo)
-async def put_todo(title: str, desc: str):
-    response = await update_todo(title, desc)
+@app.put("/api/face/{title}/", response_model=Face)
+async def put_face(title: str, desc: str):
+    response = await update_face(title, desc)
     if response:
         return response
-    raise HTTPException(404, f"There is no todo with the title {title}")
+    raise HTTPException(404, f"There is no face with the title {title}")
 
-@app.delete("/api/todo/{title}")
-async def delete_todo(title):
-    response = await remove_todo(title)
+@app.delete("/api/face/{title}")
+async def delete_face(title):
+    response = await remove_face(title)
     if response:
-        return "Successfully deleted todo"
-    raise HTTPException(404, f"There is no todo with the title {title}")
+        return "Successfully deleted face"
+    raise HTTPException(404, f"There is no face with the title {title}")
