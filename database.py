@@ -5,7 +5,7 @@ import motor.motor_asyncio
 from model import Face
 
 client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://localhost:27017/')
-database = client.FaceList
+database = client.face_db
 collection = database.face
 
 
