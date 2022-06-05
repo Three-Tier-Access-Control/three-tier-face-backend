@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, APIRouter
 import face_recognition
+import urllib.request
+from PIL import Image
 from model import Face
 from database import (
     fetch_all_faces,
@@ -19,10 +21,34 @@ async def get_face():
 
 @router.post("/", response_model=Face)
 async def post_face(face: Face):
-    response = await create_face(face.dict())
+    urllib.request.urlretrieve(
+    face.photo,
+    "temp.png")
+    
+    face_image = face_recognition.load_image_file("temp.png")
+
+    face_locations = face_recognition.face_locations(face_image)
+
+    print(face_locations)
+
+    face_encoding = face_recognition.face_encodings(face_image)[0]
+    
+    face_embedding = face_encoding.tolist()
+
+    response = await create_face({
+            "first_name": face.first_name,
+            "last_name": face.last_name,
+            "email_address": face.email_address,
+            "city": face.city,
+            "id": face.id,
+            "photo": face.photo,
+            "phone_number": face.phone_number,
+            "street_address": face.street_address,
+            "embedding": face_embedding
+        })
     if response:
         return response
-    raise HTTPException(400, "Something went wrong")
+    raise HTTPException(500, "Something went wrong")
 
 
 
