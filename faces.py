@@ -1,26 +1,26 @@
 from fastapi import HTTPException, APIRouter, status
 import face_recognition
 import urllib.request
-from model import Face
+from model import Employee
 from database import collection
 
 router = APIRouter(
     prefix="/faces",
-    tags=["faces"]
+    tags=["Faces"]
 )
 
 
 @router.get("/")
-async def get_face():
+async def get_employee_faces():
     faces = []
     cursor = collection.find({})
     async for document in cursor:
-        faces.append(Face(**document))
+        faces.append(Employee(**document))
     return faces
 
 
-@router.post("/", response_model=Face)
-async def post_face(face: Face):
+@router.post("/", response_model=Employee)
+async def post_employee_face(face: Employee):
     try:
         # open image url
         urllib.request.urlretrieve(
