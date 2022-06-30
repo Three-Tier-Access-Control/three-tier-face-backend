@@ -3,9 +3,9 @@
 ## run on localhost
 
 ```sh
-uvicorn main:app --host 0.0.0.0 --port 5000
+uvicorn main:app --host 0.0.0.0 --port 3000
 ```
 
 ```sh
-uvicorn main:app --host 0.0.0.0 --port 5000 --reload
+uvicorn main:app --host 0.0.0.0 --port 3000 --reload
 ```
