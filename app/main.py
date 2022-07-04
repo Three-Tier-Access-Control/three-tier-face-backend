@@ -10,6 +10,7 @@ tags_metadata = [
 ]
 
 app = FastAPI(
+    docs_url="/",
     title="Three Tier System - Faces REST API ",
     description="REST API for Three Tier System Faces",
     version="0.0.1",
