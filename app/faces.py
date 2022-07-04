@@ -1,8 +1,8 @@
 from fastapi import HTTPException, APIRouter, status
 import face_recognition
 import urllib.request
-from model import Employee
-from database import collection
+from app.model import Employee
+from app.database import collection
 
 router = APIRouter(
     prefix="/faces",

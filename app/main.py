@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from faces import router
+from app.faces import router
 
 tags_metadata = [
     {
